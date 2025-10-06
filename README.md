@@ -1,27 +1,70 @@
-# Plantscare
+Angular Frontend – REST API Kommunikáció
+Ez az Angular alkalmazás a backend REST API-val kommunikál, amely különböző táblákon hajt végre CRUD műveleteket (pl. users, posts, stb.). A frontend célja, hogy egyszerű, felhasználóbarát felületen keresztül kezelje ezeket az adatokat.
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.1.2.
+Fő funkciók
+Adatok listázása
 
-## Development server
+Új adat létrehozása
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+Meglévő adat módosítása
 
-## Code scaffolding
+Adat törlése
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Szűrés egy adott mező alapján
 
-## Build
+Mappa- és fájlstruktúra
+src/app/api.service.ts – A REST API hívásokat végzi
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+src/app/components/ – Az egyes oldalak és elemek komponensei
 
-## Running unit tests
+src/app/app.module.ts – Modulok, szervizek, komponensek importálása
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+src/app/app-routing.module.ts – Útvonalak beállítása
 
-## Running end-to-end tests
+Szerviz (api.service.ts)
+Az ApiService tartalmazza a REST API hívásokat. Az alábbi metódusokat használja:
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+getAll(table) – Összes adat lekérése egy táblából (GET)
 
-## Further help
+getFiltered(table, field, op, value) – Szűrt lekérdezés egy táblából adott feltétellel (GET)
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+create(table, data) – Új adat létrehozása egy táblában (POST)
+
+update(table, field, op, value, data) – Adat módosítása szűrőfeltétellel (PATCH)
+
+delete(table, field, op, value) – Adat törlése szűrőfeltétellel (DELETE)
+
+Komponensek
+Például egy users komponens:
+
+Betölti a felhasználókat az ngOnInit() során
+
+Űrlappal hozzá lehet adni új felhasználót
+
+Minden felhasználó mellett van "Szerkesztés" és "Törlés" gomb
+
+A keresőmező lehetővé teszi szűrést pl. név szerint
+
+Adatkezelés folyamata
+A felhasználó műveletet kezdeményez (pl. új felhasználó hozzáadása)
+
+A komponens meghívja az ApiService megfelelő metódusát
+
+A szerviz HTTP kérést küld a Node.js backendnek
+
+A backend végrehajtja az adatbázis-műveletet, és visszaküldi az eredményt
+
+A frontend frissíti a felületet az új adatokkal
+
+Használat
+Indítsd el a backend szervert (pl. node index.js)
+
+Indítsd el az Angular alkalmazást:
+ng serve
+
+Nyisd meg a böngészőben:
+http://localhost:4200
+
+Az alkalmazás elérhető és használható a REST API-val
+
+Ez az alkalmazás bármilyen táblanévvel működik, mivel dinamikusan kezeli a kéréseket. A komponensek és az api.service.ts fájl paraméterként fogadják el a tábla nevét és mezőket, így új entitások kezeléséhez nem szükséges új endpointot vagy route-ot létrehozni.
