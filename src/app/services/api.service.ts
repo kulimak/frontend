@@ -1,7 +1,8 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { environment } from '../../environments/environment';
-import { retry } from 'rxjs';
+import { reportUnhandledError } from 'rxjs/internal/util/reportUnhandledError';
+import { Observable } from 'rxjs';
+
 
 @Injectable({
   providedIn: 'root'
@@ -9,63 +10,42 @@ import { retry } from 'rxjs';
 
 export class ApiService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
-  private tokenName = environment.tokenName;
-  private server = environment.serverUrl;
+  server = `http://localhost:3000/api`;
 
-  getToken():String | null{
-    return localStorage.getItem(this.tokenName);
+  newPlant(table: string, plant:object)
+  {
+    return this.http.post(`${this.server}/${table}`, plant);
   }
 
-  tokenHeader():{ headers: HttpHeaders }{
-    const token = this.getToken();
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
-    return { headers }
+  getAllPlants(table:string)
+  {
+    return this.http.get(`${this.server}/${table}`)
   }
 
-  registration(table:string, data:object){
-    return this.http.post(this.server + '/reg/' + table, data);
+  getPlantById(table: string, id:string)
+  {
+    return this.http.get(`${this.server}/${table}/${id}`);
   }
 
-  login(table:string, data:object){
-    return this.http.post(this.server + '/login/' + table, data);
+  updatePlant(table:string, id:number, plant:object)
+  {
+    return this.http.patch(`${this.server}/${table}/${id}`, plant);
   }
 
-  read(table: string, field:string, op: string, value: string){
-    return this.http.get(this.server + '/public/'+table+'/'+field+'/'+op+'/'+value);
+  deletePlant(table:string, id:number)
+  {
+    return this.http.delete(`${this.server}/${table}/${id}`)
   }
 
-  readAll(table: string){
-    return this.http.get(this.server + '/public/' + table);
+  addWatering(table:string, watering:object)
+  {
+    return this.http.post(`${this.server}/${table}`, watering);
   }
 
-  // token-el védett metódusok:
-
-  select(table: string, field:string, op: string, value: string){
-    return this.http.get(this.server + '/'+table+'/'+field+'/'+op+'/'+value, this.tokenHeader());
+  deleteWatering(table:string, id:number)
+  {
+    return this.http.delete(`${this.server}/${table}/${id}`)
   }
-
-  selectAll(table: string){
-    return this.http.get(this.server + '/' + table, this.tokenHeader());
-  }
-
-  insert(table: string, data:object){
-    return this.http.post(this.server + '/'+table, data, this.tokenHeader());
-  }
-
-  update(table:string, id:string, data:object){
-    return this.http.post(this.server + '/'+table+'/id/eq/'+id, data, this.tokenHeader());
-  }
-
-  delete(table:string, id:string){
-    return this.http.delete(this.server + '/'+table+'/id/eq/'+id, this.tokenHeader());
-  }
-
-  sendMail(data:object){
-    return this.http.post(this.server + '/send', data);
-  }
-
 }
